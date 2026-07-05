@@ -1,0 +1,30 @@
+name: Weekly review digest
+
+on:
+  schedule:
+    # 14:00 UTC Monday ≈ 7–8am America/Denver — start the week with the pile.
+    - cron: "0 14 * * 1"
+  workflow_dispatch:
+
+concurrency: gardener-weekly
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Write Gmail secrets
+        run: |
+          printf '%s' '${{ secrets.GMAIL_CREDENTIALS }}' > credentials.json
+          printf '%s' '${{ secrets.GMAIL_TOKEN }}' > token.json
+      - name: Send weekly digest
+        env:
+          GARDENER_DRY_RUN: "false"   # digest is a self-email; always send
+        run: python run_weekly.py
+      - name: Scrub secrets
+        if: always()
+        run: rm -f credentials.json token.json

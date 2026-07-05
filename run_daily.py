@@ -12,6 +12,8 @@ re-run it as many times as you like while tuning the rules.
 
 from __future__ import annotations
 
+import os
+
 from gardener.classifier import Bucket
 from gardener.config import Settings, load_rules
 from gardener.gmail_client import GmailClient
@@ -26,7 +28,10 @@ def main() -> int:
     state = RunState(settings.state_path)
 
     client = GmailClient.from_settings(settings)
-    after = state.daily_query_after_epoch()
+    # A generous default window; the Gardener/Processed label makes overlap
+    # harmless, so a late run never misses mail and never double-acts.
+    lookback = int(os.environ.get("GARDENER_LOOKBACK_HOURS", "48"))
+    after = state.daily_query_after_epoch(default_lookback_hours=lookback)
 
     ids = client.list_new_message_ids(after)
     messages = [client.get_message(mid) for mid in ids]

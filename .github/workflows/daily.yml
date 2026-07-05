@@ -1,0 +1,37 @@
+name: Daily inbox cleanup
+
+on:
+  schedule:
+    # 13:00 UTC ≈ 6–7am America/Denver (before the day's promos pile up).
+    - cron: "0 13 * * *"
+  workflow_dispatch:        # lets you run it on demand from the Actions tab
+    inputs:
+      dry_run:
+        description: "Dry run (no changes)?"
+        type: boolean
+        default: false
+
+concurrency: gardener-daily  # never overlap two runs
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Write Gmail secrets
+        run: |
+          printf '%s' '${{ secrets.GMAIL_CREDENTIALS }}' > credentials.json
+          printf '%s' '${{ secrets.GMAIL_TOKEN }}' > token.json
+      - name: Run daily cleanup
+        env:
+          # Live by default; set repo variable GARDENER_DRY_RUN=true to preview only.
+          # The manual-dispatch checkbox overrides when you run it by hand.
+          GARDENER_DRY_RUN: ${{ inputs.dry_run && 'true' || vars.GARDENER_DRY_RUN || 'false' }}
+        run: python run_daily.py
+      - name: Scrub secrets
+        if: always()
+        run: rm -f credentials.json token.json
