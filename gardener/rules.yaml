@@ -13,7 +13,8 @@ keep:
   # --- News ---
   - nytimes.com            # NYT
   - medscape.com           # Medscape
-  - taosnews.com           # Taos News (local NM)
+  - taosnews.com                        # Taos News (local NM)
+  - taosnews.secondstreetmessages.com   # Taos News' actual newsletter send domain (Second Street platform)
   - newmexicopbs.org       # NM PBS / KNME  (confirm real send domain in wk 1)
   - knme.org
 
@@ -32,6 +33,10 @@ keep:
   - higheredjobs.com
   - chronicle.com          # Chronicle / Vitae academic job alerts
 
+  # --- Other confirmed keeps (owner's calls from the live inbox) ---
+  - github.com             # dev notifications
+  - thepointsguy.com       # travel/points newsletter
+
   # --- Financial / transactional (never touch) ---
   - vanguard.com
   - usaa.com
@@ -41,12 +46,29 @@ keep:
   - accounts.google.com
   # Add your bank's send domain here once confirmed in the wk-1 report.
 
-# Retail intentionally starts EMPTY. With no retail rules, nothing is archived
-# in week 1 — every unknown promo lands in the REVIEW digest, you tag the true
-# retail senders, and the learned store fills this role going forward.
-# Examples of entries you'd end up with (commented out until confirmed):
-retail: []
-  # - jcrew.com
-  # - sephora.com
-  # - rei.com
-  # - bombas.com
+# Retail — shopping/catalog senders. These get the Gardener/Retail label and
+# are archived out of the inbox (reversible; never permanently deleted). Seeded
+# from the owner's own inbox and confirmed sender-by-sender. Grows over time as
+# new subscriptions are tagged in the weekly review.
+retail:
+  # Clothing / beauty / gear
+  - lululemon.com
+  - birkenstock.com
+  - on.com               # On running (news.on.com)
+  - poshmark.com
+  - coolibar.com
+  - gressaskin.com
+  - gobros.com
+  - greenstyle.com
+  - walkfulton.com       # Fulton
+  - leftonfriday.com
+  - naniswimwear.com
+  - laseraway.com
+  - expertvoice.com
+  - megantheestallion.com
+  # Owner's explicit calls on borderline senders
+  - rmpbs.org            # Rocky Mountain PBS (not NM PBS)
+  - doordash.com
+  - myfitnesspal.com
+  - calm.com
+  - indeed.com           # incl. jobalert.indeed.com

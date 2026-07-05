@@ -64,8 +64,10 @@ def test_run_state_persists_last_run(tmp_path):
     assert st2.daily_query_after_epoch() == int(when.timestamp())
 
 
-def test_load_rules_seed_has_keep_and_empty_retail():
+def test_load_rules_seed_has_expected_keep_and_retail():
     rules = load_rules()  # the shipped seed
     assert "nytimes.com" in rules.keep
     assert "maps.org" in rules.keep
-    assert rules.retail == []  # nothing archives until learned/confirmed
+    assert "github.com" in rules.keep          # owner's confirmed keep
+    assert "lululemon.com" in rules.retail     # seeded retail
+    assert "rmpbs.org" in rules.retail         # owner's explicit retail call
