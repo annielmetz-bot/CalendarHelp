@@ -91,12 +91,22 @@ def load_credentials(credentials_path, token_path):
     from google.oauth2.credentials import Credentials
 
     token_path = Path(token_path)
-    if not token_path.exists():
-        raise FileNotFoundError(
-            f"No token at {token_path}. Run `python authorize.py` once with your "
-            f"{credentials_path} to create it."
+    raw = token_path.read_text().strip() if token_path.exists() else ""
+    if not raw:
+        raise SystemExit(
+            "Gmail token is missing or empty.\n"
+            "  • On GitHub: add repository secrets GMAIL_TOKEN and GMAIL_CREDENTIALS "
+            "(Settings → Secrets and variables → Actions). See README → Deploy.\n"
+            "  • Locally: run `python authorize.py` once to create token.json."
         )
-    creds = Credentials.from_authorized_user_file(str(token_path), SCOPES)
+    try:
+        creds = Credentials.from_authorized_user_file(str(token_path), SCOPES)
+    except ValueError as e:
+        raise SystemExit(
+            f"Gmail token at {token_path} is malformed ({e}). "
+            "Re-create it with `python authorize.py`, or re-paste the full "
+            "token.json into the GMAIL_TOKEN secret."
+        ) from e
     if not creds.valid and creds.expired and creds.refresh_token:
         creds.refresh(Request())
         token_path.write_text(creds.to_json())
