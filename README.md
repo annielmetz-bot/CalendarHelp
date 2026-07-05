@@ -12,7 +12,7 @@ behind it.
 
 - [x] **Classifier core** — `gardener/classifier.py`, sender/header based, unit-tested.
 - [x] **Seed rules** — `gardener/rules.yaml`.
-- [ ] Learned store + run state
+- [x] **Learned store + run state** — `gardener/store.py`, `gardener/config.py`.
 - [ ] Gmail client (OAuth, list/label/archive/send)
 - [ ] Daily runner (dry-run aware)
 - [ ] Weekly digest
