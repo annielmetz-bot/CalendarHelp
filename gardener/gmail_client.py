@@ -126,11 +126,8 @@ class GmailClient:
 
     # ---- reading ----
 
-    def list_new_message_ids(self, after_epoch: int, exclude_processed: bool = True) -> list[str]:
-        """Ids of inbox messages newer than `after_epoch`, oldest work first."""
-        query = f"in:inbox after:{after_epoch}"
-        if exclude_processed:
-            query += f' -label:"{LABEL_PROCESSED}"'
+    def search_ids(self, query: str) -> list[str]:
+        """All message ids matching a Gmail search query (paginated)."""
         ids: list[str] = []
         req = self.service.users().messages().list(userId=self.user_id, q=query)
         while req is not None:
@@ -138,6 +135,29 @@ class GmailClient:
             ids.extend(m["id"] for m in resp.get("messages", []))
             req = self.service.users().messages().list_next(req, resp)
         return ids
+
+    def list_new_message_ids(self, after_epoch: int, exclude_processed: bool = True) -> list[str]:
+        """Ids of inbox messages newer than `after_epoch`, oldest work first."""
+        query = f"in:inbox after:{after_epoch}"
+        if exclude_processed:
+            query += f' -label:"{LABEL_PROCESSED}"'
+        return self.search_ids(query)
+
+    def get_header_summary(
+        self, msg_id: str, headers: tuple[str, ...] = ("From", "Subject")
+    ) -> dict:
+        """Lowercased header values for one message — used to build the digest."""
+        msg = (
+            self.service.users()
+            .messages()
+            .get(userId=self.user_id, id=msg_id, format="metadata", metadataHeaders=list(headers))
+            .execute()
+        )
+        payload = msg.get("payload", {}) or {}
+        return {
+            (h.get("name") or "").lower(): (h.get("value") or "")
+            for h in payload.get("headers", [])
+        }
 
     def get_message(self, msg_id: str) -> Message:
         msg = (
