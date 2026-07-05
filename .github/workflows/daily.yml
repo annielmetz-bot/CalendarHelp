@@ -2,8 +2,9 @@ name: Daily inbox cleanup
 
 on:
   schedule:
-    # 13:00 UTC ≈ 6–7am America/Denver (before the day's promos pile up).
-    - cron: "0 13 * * *"
+    # 11:30 UTC = 5:30am America/Denver during MDT (daylight saving).
+    # Note: GitHub cron is UTC-only (no DST), so in winter (MST) this fires 4:30am.
+    - cron: "30 11 * * *"
   workflow_dispatch:        # lets you run it on demand from the Actions tab
     inputs:
       dry_run:
