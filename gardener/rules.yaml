@@ -76,3 +76,17 @@ retail:
   - indeed.com           # incl. jobalert.indeed.com
   - muji.us              # Muji
   - tomperriello.com     # political mailing list — owner doesn't want it
+  - skincaregenerics.com
+  - wastedfabrics.com
+  - quikly.com
+  - descript.com         # marketing.descript.com
+  - archiveresale.co     # Toad&Co resale
+  - identogo.com         # universalenroll.identogo.com
+  - pesieducation.com    # owner: get rid of it
+  - celebrationsbysinead.com
+
+# Trash — explicit deletes. These are moved to Trash (auto-purges in ~30 days,
+# recoverable until then), not just archived. Keep this list narrow: only
+# single-brand domains, never shared email platforms.
+trash:
+  - nextdoor.com

@@ -35,7 +35,7 @@ def main() -> int:
 
     ids = client.list_new_message_ids(after)
     messages = [client.get_message(mid) for mid in ids]
-    decisions = plan(messages, rules.keep, rules.retail, learned)
+    decisions = plan(messages, rules.keep, rules.retail, learned, rules.trash)
 
     mode = "DRY-RUN (no changes)" if settings.dry_run else "LIVE"
     print(f"Inbox Gardener — {mode} — {settings.account}")
@@ -51,6 +51,7 @@ def main() -> int:
     print(
         f"\nKEEP={counts[Bucket.KEEP]}  "
         f"RETAIL={counts[Bucket.RETAIL]} (archived)  "
+        f"TRASH={counts[Bucket.TRASH]} (trashed)  "
         f"REVIEW={counts[Bucket.REVIEW]} (held in inbox)"
     )
     if settings.dry_run:

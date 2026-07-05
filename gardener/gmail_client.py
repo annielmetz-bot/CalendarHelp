@@ -230,6 +230,10 @@ class GmailClient:
         processed = self.get_or_create_label(LABEL_PROCESSED)
         self._modify(msg_id, add=[review, processed])
 
+    def trash_message(self, msg_id: str) -> None:
+        """Move to Trash (leaves inbox; auto-purges in ~30 days, recoverable)."""
+        self.service.users().messages().trash(userId=self.user_id, id=msg_id).execute()
+
     def mark_processed(self, msg_id: str) -> None:
         """Used for KEEP: record we've seen it, change nothing else."""
         processed = self.get_or_create_label(LABEL_PROCESSED)

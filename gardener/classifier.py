@@ -17,6 +17,7 @@ from dataclasses import dataclass, field
 class Bucket(str, enum.Enum):
     KEEP = "KEEP"      # never touched; stays in the inbox
     RETAIL = "RETAIL"  # shopping/catalog; labeled + archived out of the inbox
+    TRASH = "TRASH"    # explicit delete; moved to Trash (recoverable ~30 days)
     REVIEW = "REVIEW"  # unknown sender; held in inbox and surfaced weekly
 
 
@@ -79,14 +80,17 @@ def classify(
     keep: list[str],
     retail: list[str],
     learned: dict[str, str] | None = None,
+    trash: list[str] | None = None,
 ) -> Classification:
     """Decide the bucket for one email.
 
-    Order: learned corrections win, then the static KEEP list, then RETAIL,
-    then everything unknown falls to REVIEW. Unknown senders are *surfaced*,
-    never auto-archived — that is what makes the first week safe by construction.
+    Order: learned corrections win, then the static KEEP list (which always
+    protects), then TRASH (explicit deletes), then RETAIL, then everything
+    unknown falls to REVIEW. Unknown senders are *surfaced*, never auto-filed —
+    that is what makes the first week safe by construction.
     """
     learned = learned or {}
+    trash = trash or []
     bulk = is_bulk(meta)
 
     # 1. Learned corrections (keyed by domain suffix) win over static rules.
@@ -96,14 +100,18 @@ def classify(
                 Bucket(bucket_name), f"learned:{bucket_name.lower()}", domain, bulk
             )
 
-    # 2. KEEP list — checked before RETAIL so a keep rule always protects.
+    # 2. KEEP list — checked first so a keep rule always protects.
     if m := _first_match(keep, meta):
         return Classification(Bucket.KEEP, "keep-list", m, bulk)
 
-    # 3. RETAIL list.
+    # 3. TRASH list — explicit deletes, ahead of RETAIL.
+    if m := _first_match(trash, meta):
+        return Classification(Bucket.TRASH, "trash-list", m, bulk)
+
+    # 4. RETAIL list.
     if m := _first_match(retail, meta):
         return Classification(Bucket.RETAIL, "retail-list", m, bulk)
 
-    # 4. Unknown sender → hold for review.
+    # 5. Unknown sender → hold for review.
     reason = "unknown-sender (bulk)" if bulk else "unknown-sender"
     return Classification(Bucket.REVIEW, reason, None, bulk)

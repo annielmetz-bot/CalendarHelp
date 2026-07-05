@@ -21,13 +21,15 @@ DEFAULT_RULES = Path(__file__).resolve().parent / "rules.yaml"
 class Rules:
     keep: list[str]
     retail: list[str]
+    trash: list[str]
 
 
 def load_rules(path: str | Path = DEFAULT_RULES) -> Rules:
     data = yaml.safe_load(Path(path).read_text()) or {}
     keep = [str(x).strip().lower() for x in (data.get("keep") or [])]
     retail = [str(x).strip().lower() for x in (data.get("retail") or [])]
-    return Rules(keep=keep, retail=retail)
+    trash = [str(x).strip().lower() for x in (data.get("trash") or [])]
+    return Rules(keep=keep, retail=retail, trash=trash)
 
 
 def _env_bool(name: str, default: bool) -> bool:

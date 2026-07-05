@@ -32,10 +32,11 @@ def plan(
     keep: list[str],
     retail: list[str],
     learned: dict[str, str],
+    trash: list[str] | None = None,
 ) -> list[Decision]:
     decisions = []
     for msg in messages:
-        c = classify(msg.meta, keep, retail, learned)
+        c = classify(msg.meta, keep, retail, learned, trash)
         decisions.append(Decision(msg, c.bucket, c.reason))
     return decisions
 
@@ -43,6 +44,7 @@ def plan(
 # Which client action each bucket maps to. KEEP is only marked as processed.
 _ACTION = {
     Bucket.RETAIL: "label_and_archive_retail",
+    Bucket.TRASH: "trash_message",
     Bucket.REVIEW: "label_review",
     Bucket.KEEP: "mark_processed",
 }
@@ -54,7 +56,7 @@ def execute(
     dry_run: bool,
 ) -> dict[Bucket, int]:
     """Apply each decision. In dry-run, count but touch nothing."""
-    counts = {Bucket.KEEP: 0, Bucket.RETAIL: 0, Bucket.REVIEW: 0}
+    counts = {Bucket.KEEP: 0, Bucket.RETAIL: 0, Bucket.TRASH: 0, Bucket.REVIEW: 0}
     for d in decisions:
         counts[d.bucket] += 1
         if dry_run:
