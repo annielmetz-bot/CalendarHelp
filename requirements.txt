@@ -1,0 +1,5 @@
+# Runtime deps. Gmail/OAuth deps are added when we build gmail_client.py.
+PyYAML==6.0.2
+google-api-python-client==2.149.0
+google-auth==2.35.0
+google-auth-oauthlib==1.2.1

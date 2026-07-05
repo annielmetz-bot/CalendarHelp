@@ -1,0 +1,52 @@
+# Inbox Gardener — static classification rules.
+#
+# Patterns are matched as DOMAIN SUFFIXES, so "nytimes.com" also matches
+# "email.nytimes.com", "e.nytimes.com", etc. A pattern containing "@" matches
+# that exact address instead (useful for shared senders like accounts.google.com).
+#
+# This is a SEED. Several sending domains below are best guesses and get
+# confirmed/refined automatically during the dry-run week, when the agent
+# reports the real domains it actually sees. Corrections you make also feed a
+# separate learned store that overrides this file.
+
+keep:
+  # --- News ---
+  - nytimes.com            # NYT
+  - medscape.com           # Medscape
+  - taosnews.com           # Taos News (local NM)
+  - newmexicopbs.org       # NM PBS / KNME  (confirm real send domain in wk 1)
+  - knme.org
+
+  # --- Personal / family ---
+  - storyworth.com         # StoryWorth
+
+  # --- Psychedelic-field newsletters (KEEP ALL) ---
+  - psychedelicalpha.com   # Psychedelic Alpha
+  - maps.org               # MAPS
+  - madinamerica.com       # Mad in America
+  # Ecstatic Integration is a Substack; confirm whether it sends from a custom
+  # domain or substack.com before trusting a broad substack.com keep.
+  - ecstaticintegration.substack.com
+
+  # --- Counselor-education job alerts (confirm actual alert sender in wk 1) ---
+  - higheredjobs.com
+  - chronicle.com          # Chronicle / Vitae academic job alerts
+
+  # --- Financial / transactional (never touch) ---
+  - vanguard.com
+  - usaa.com
+  - healthequity.com
+  - rocketmortgage.com
+  - google.com             # Google security + Search Console notifications
+  - accounts.google.com
+  # Add your bank's send domain here once confirmed in the wk-1 report.
+
+# Retail intentionally starts EMPTY. With no retail rules, nothing is archived
+# in week 1 — every unknown promo lands in the REVIEW digest, you tag the true
+# retail senders, and the learned store fills this role going forward.
+# Examples of entries you'd end up with (commented out until confirmed):
+retail: []
+  # - jcrew.com
+  # - sephora.com
+  # - rei.com
+  # - bombas.com

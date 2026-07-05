@@ -1,0 +1,16 @@
+# Secrets — NEVER commit these
+credentials.json
+token.json
+*.pem
+.env
+
+# State (local runs)
+learned.json
+state.json
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
