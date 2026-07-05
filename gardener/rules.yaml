@@ -44,6 +44,8 @@ keep:
   - rocketmortgage.com
   - google.com             # Google security + Search Console notifications
   - accounts.google.com
+  - anthropic.com          # billing / invoices & statements
+  - unum.com               # insurance
   # Add your bank's send domain here once confirmed in the wk-1 report.
 
 # Retail — shopping/catalog senders. These get the Gardener/Retail label and
