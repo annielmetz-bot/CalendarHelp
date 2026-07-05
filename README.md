@@ -14,7 +14,7 @@ behind it.
 - [x] **Seed rules** — `gardener/rules.yaml`.
 - [x] **Learned store + run state** — `gardener/store.py`, `gardener/config.py`.
 - [x] **Gmail client** — `gardener/gmail_client.py` + `authorize.py`, scope `gmail.modify`.
-- [ ] Daily runner (dry-run aware)
+- [x] **Daily runner** — `gardener/runner.py` + `run_daily.py`, dry-run aware.
 - [ ] Weekly digest
 - [ ] Scheduling (GitHub Actions cron)
 
